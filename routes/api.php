@@ -110,4 +110,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::post('/login/google', [AuthController::class, 'loginWithGoogle']);
 Route::post('diagnosis', [DiagnosisController::class, 'query']);
 Route::post('rag-diagnosis', [DiagnosisController::class, 'ragQuery']);
+Route::get('landing-page', [PatientController::class, 'landingPage']);
 

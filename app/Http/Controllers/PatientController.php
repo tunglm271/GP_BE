@@ -90,4 +90,15 @@ class PatientController extends Controller
             return response()->json(['error' => 'Model API call failed'], 500);
         }
     }
+
+    public function landingPage(Request $request)
+    {
+        $facilities = MedicalFacility::inRandomOrder()->limit(6)->get();
+        $services = MedicalService::inRandomOrder()->limit(6)->get();
+
+        return response()->json([
+            'facilities' => $facilities,
+            'services' => $services,
+        ]);
+    }
 }

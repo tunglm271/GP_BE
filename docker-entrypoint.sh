@@ -40,6 +40,28 @@ php artisan cache:clear
 echo "Running migrations..."
 php artisan migrate --seed
 
+php artisan generate:embedding
+
+# Start queue worker in the background
+echo "Starting Laravel queue worker..."
+php artisan queue:work --tries=3 --timeout=90 &
+QUEUE_PID=$!
+
 # Start the application
 echo "Starting Laravel application..."
-php artisan serve --host=0.0.0.0 --port=8000 
+php artisan serve --host=0.0.0.0 --port=8000 &
+SERVER_PID=$!
+
+# Function to handle shutdown
+cleanup() {
+    echo "Shutting down..."
+    kill $QUEUE_PID
+    kill $SERVER_PID
+    exit 0
+}
+
+# Trap SIGTERM and SIGINT
+trap cleanup SIGTERM SIGINT
+
+# Wait for both processes
+wait $QUEUE_PID $SERVER_PID 
